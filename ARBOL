@@ -1,0 +1,236 @@
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+
+struct nodo{
+	
+	int dato;
+	nodo*dere;
+	nodo*izq;
+	nodo *padre;
+};
+
+nodo*relleno(int, nodo *);
+void ingresar(nodo *&, int, nodo * );
+void mostrar(nodo *, int );
+bool buscar(nodo *, int );
+void eliminar(nodo *, int );
+void eliminarvertice(nodo *);
+void quitarnodo(nodo *);
+void preorden(nodo *);
+void inorden(nodo *);
+void postorden(nodo *);
+	nodo*arbol=NULL;
+
+int main(){
+	int numero, cont=0,opcion;
+	do{
+
+	cout<<"1.Digitar datos"<<endl;
+	cout<<"2.Mostrar arbol"<<endl;
+	cout<<"3.Busqueda en preorden"<<endl;
+	cout<<"4.Busqueda en inorden"<<endl;
+	cout<<"5.Busqueda en postorden"<<endl;
+	cout<<"6.Buscar un elemento"<<endl;
+	cout<<"7.Eliminar elemento"<<endl;
+	cout<<"8.Salir\n"<<endl;
+	cout<<"Digite una opcion: ";cin>>opcion;
+	
+	switch(opcion){
+		case 1:cout<<"Digite un numero: ";cin>>numero;
+			ingresar(arbol,numero,NULL);
+			cout<<"\n";
+			system("pause");
+			break;
+		case 2:cout<<"Mostrando arbol..."<<endl;
+				mostrar(arbol,cont);
+				cout<<"\n";
+			system("pause");
+			break;
+		case 3: preorden(arbol);
+			cout<<"\nDigite el numero que desea buscar: ";cin>>numero;
+				if(buscar(arbol,numero)==true){
+					cout<<"El numero si se ha encontrado";
+				}else{
+					cout<<"El numero no se ha encontrado";
+				}
+			cout<<"\n";
+			system("pause");
+			break;
+		case 4: inorden(arbol);
+		cout<<"\nDigite el numero que desea buscar: ";cin>>numero;
+				if(buscar(arbol,numero)==true){
+					cout<<"El numero si se ha encontrado";
+				}else{
+					cout<<"El numero no se ha encontrado";
+				}
+			cout<<"\n";
+			system("pause");
+			break;
+		case 5: postorden(arbol);
+		cout<<"\nDigite el numero que desea buscar: ";cin>>numero;
+				if(buscar(arbol,numero)==true){
+					cout<<"El numero si se ha encontrado";
+				}else{
+					cout<<"El numero no se ha encontrado";
+				}
+			cout<<"\n";
+			system("pause");
+			break;
+		case 6:	cout<<"\nDigite el numero que desea buscar: ";cin>>numero;
+				if(buscar(arbol,numero)==true){
+					cout<<"El numero si se ha encontrado";
+				}else{
+					cout<<"El numero no se ha encontrado";
+				}
+				cout<<"\n";
+				system("pause");
+				break;
+		case 7:cout<<"Que numero desea eliminar: ";cin>>numero;
+					eliminar(arbol, numero);
+					cout<<"\n";
+					system("pause");
+					break;
+	}
+	system("cls");
+}while(opcion != 8);
+}
+nodo* relleno(int n, nodo *padre){
+	nodo* nuevonodo=new nodo();
+	nuevonodo->dato=n;
+	nuevonodo->dere=NULL;
+	nuevonodo->izq=NULL;
+	nuevonodo->padre=padre;
+	return nuevonodo;
+}
+
+void ingresar(nodo *&arbol, int n, nodo*padre){
+	if(arbol==NULL){
+		nodo*nuevonodo=relleno(n,padre);
+		arbol=nuevonodo;
+		}else{
+		int valorRaiz;
+		valorRaiz=arbol->dato;
+			if(n<valorRaiz){
+				ingresar(arbol->izq,n,arbol);
+			}else
+			{
+				ingresar(arbol->dere,n,arbol);
+			}
+		}
+}
+void mostrar(nodo *arbol, int contador){
+	if(arbol==NULL){
+		return;
+	}
+	else{
+		mostrar(arbol->dere,contador+1);
+		for(int i=0; i<contador; i++){
+			cout<<"    ";
+
+		}
+		cout<<arbol->dato<<endl;
+		mostrar(arbol->izq,contador+1);
+		
+	}
+	
+	}
+	
+bool buscar(nodo *arbol, int n){
+	if(arbol==NULL){
+		return false;
+	}else if(arbol->dato==n){
+		return true;
+	}else if(n<arbol->dato){
+		return buscar(arbol->izq,n);
+	}else{
+		return buscar(arbol->dere,n);
+	}
+}
+void preorden(nodo *arbol){
+	if(arbol==NULL){
+	return;
+	}
+	cout<<arbol->dato<<" - ";
+	preorden(arbol->izq);
+	preorden(arbol->dere);
+}
+void inorden(nodo *arbol){
+	if(arbol==NULL){
+	return;
+	}
+	inorden(arbol->izq);
+	cout<<arbol->dato<<" - ";
+	inorden(arbol->dere);
+}
+
+void postorden(nodo *arbol){
+	if(arbol==NULL){
+	return;
+	}
+	postorden(arbol->izq);
+	postorden(arbol->dere);
+	cout<<arbol->dato<<" - ";
+}
+
+
+
+void eliminar(nodo *arbol, int n){
+	if(arbol==NULL){
+		return;
+	}else if(n<arbol->dato){
+		eliminar(arbol->izq,n);
+	}else if(n>arbol->dato){
+		eliminar(arbol->dere,n);
+	}else{
+		eliminarvertice(arbol);
+	}
+	
+}
+void quitarnodo(nodo *nodo){
+	nodo->izq=NULL;
+	nodo->dere=NULL;
+	delete nodo;
+}
+
+nodo *remplazar(nodo *arbol, nodo *hijo){
+	if(arbol->padre){
+		if(arbol->dato==arbol->padre->izq->dato){
+			arbol->padre->izq=hijo;
+		}else if(arbol->dato==arbol->padre->dere->dato){
+			arbol->padre->dere=hijo;
+		}	
+	}if(hijo){
+		hijo->padre=arbol->padre;
+	}
+	}
+
+
+nodo *senalar(nodo *arbol){
+	if(arbol==NULL){
+		return NULL;
+	}
+	 if(arbol->izq){
+		return senalar(arbol->izq);
+	}else{
+		return arbol;
+	}
+}
+
+
+void eliminarvertice(nodo *eliminador){
+	if(eliminador->izq && eliminador->dere){
+		nodo *menor=senalar(eliminador->dere);
+		eliminador->dato=menor->dato;
+		eliminarvertice(menor);
+	}else if(eliminador->izq){
+		remplazar(eliminador,eliminador->izq);
+		quitarnodo(eliminador);
+	}else if(eliminador->dere){
+		remplazar(eliminador, eliminador->dere);
+		quitarnodo(eliminador);
+	}else{
+		remplazar(eliminador,NULL);
+		quitarnodo(eliminador);
+	}
+}
